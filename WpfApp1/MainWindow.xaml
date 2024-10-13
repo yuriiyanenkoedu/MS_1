@@ -1,0 +1,85 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="600"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Column="1"
+               VerticalAlignment="Top"
+               HorizontalAlignment="Center"
+               >From 0 to</Label>
+        <TextBox Grid.Column="1" Name="MaxValue"
+                 Height="20"
+                 Width="50"
+                 VerticalAlignment="Top"
+                 HorizontalAlignment="Center"
+                 Margin="0, 20, 0, 0"
+                 PreviewTextInput="OnPreviewTextInput">
+        </TextBox>
+        
+        <Label Grid.Column="1" 
+               
+               VerticalAlignment="Center"
+               HorizontalAlignment="Center"
+               Margin="0, 0, 0, 35">Amount of numbers</Label>
+        <TextBox Grid.Column="1" Name="Tests"
+                 Height="20"
+                 Width="50"
+                 VerticalAlignment="Center"
+                 HorizontalAlignment="Center"
+                 Margin="0, 0, 0, 0"
+                 PreviewTextInput="OnPreviewTextInput">
+        </TextBox>
+        
+        <Label Grid.Column="1" 
+               VerticalAlignment="Bottom"
+               HorizontalAlignment="Center"
+               Margin="0,0,0,20"
+               >Amount of Intervals</Label>
+        <TextBox Grid.Column="1" Name="intervalsCount"
+                 Height="20"
+                 Width="50"
+                 VerticalAlignment="Bottom"
+                 HorizontalAlignment="Center"
+                 Margin="0, 0, 0, 0"
+                 PreviewTextInput="OnPreviewTextInput">
+        </TextBox>
+        
+        <Button Grid.Column="1"
+                Grid.Row="2"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Height="20"
+                Width="60"
+                Margin="0, 50, 0, 0"
+                Click="ButtonBase_OnClick">Get digits</Button>
+        <Label VerticalAlignment="Top" HorizontalAlignment="Left">Standart Random</Label>
+        <oxy:PlotView Name="plotView1" Height="100" Width="470" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0, 0, 0, 10"></oxy:PlotView>
+        
+        <ListView Name="list1" Width="100" HorizontalAlignment="Right" Margin="0, 0, 0, 10"></ListView>
+        
+        <Label Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left">Linear Congurent Method</Label>
+        <oxy:PlotView Name="plotView2" Grid.Row="1" Height="100" Width="470" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0, 0, 0, 10"></oxy:PlotView>
+        <ListView Name="list2" Grid.Row="1" Width="100" HorizontalAlignment="Right" Margin="0, 0, 0, 10"></ListView>
+        
+        <Label Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Left">Middle Square Method</Label>
+        <oxy:PlotView Name="plotView3" Grid.Row="2"  Height="100" Width="470" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0, 0, 0, 10"></oxy:PlotView>
+        <ListView Name="list3" Grid.Row="2" Width="100" HorizontalAlignment="Right" Margin="0, 0, 0, 10"></ListView>
+
+        
+    </Grid>
+</Window>
