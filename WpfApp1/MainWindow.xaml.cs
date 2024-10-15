@@ -207,21 +207,15 @@ public partial class MainWindow : Window
             workSheet.Cells[1, 1].Value = "Standart random";
             workSheet.Cells[1, 2].Value = "Linear random";
             workSheet.Cells[1, 3].Value = "Middle square random";
-            for(int i = 0; i < randoms[0].Items.Count; i++)
+            for(int i = 0; i < amountOfTests; i++)
             {
                 workSheet.Cells[i + 2, 1].Value = randoms[0].Items[i];
-            }
-            
-            for(int i = 0; i < randoms[1].Items.Count; i++)
-            {
                 workSheet.Cells[i + 2, 2].Value = randoms[1].Items[i];
-            }
-            
-            for(int i = 0; i < randoms[2].Items.Count; i++)
-            {
                 workSheet.Cells[i + 2, 3].Value = randoms[2].Items[i];
             }
-
+            workSheet.Cells[1, 4].Value = maxValue;
+            workSheet.Cells[1, 5].Value = intervalCount;
+            workSheet.Cells[1, 6].Value = amountOfTests;
             FileStream file = new FileStream($"../../../../xlsFiles/{fileName}", FileMode.Append);
             file.Close();
             var fileInfo = new FileInfo($"../../../../xlsFiles/{fileName}");
@@ -229,8 +223,47 @@ public partial class MainWindow : Window
         }
     }
 
+    private void ImportFromExcel(string fileName)
+    {
+        List<int> msRand = new List<int>();
+        List<int> stdRand = new List<int>();
+        List<int> linRand = new List<int>();
+
+        using (var package = new ExcelPackage(new FileInfo($"../../../../xlsFiles/{fileName}")))
+        {
+            var workSheet = package.Workbook.Worksheets[0];
+            for (int row = 2; row <= workSheet.Dimension.End.Row; row++)
+            {
+                if(workSheet.Cells[row, 1].Value == null) break;
+                
+                stdRand.Add(Convert.ToInt32(workSheet.Cells[row, 1].Value));
+                linRand.Add(Convert.ToInt32( workSheet.Cells[row, 2].Value));
+                msRand.Add(Convert.ToInt32(workSheet.Cells[row, 3].Value));
+            }
+            
+            maxValue = Convert.ToInt32(workSheet.Cells[1, 4].Value);
+            intervalCount = Convert.ToInt32(workSheet.Cells[1, 5].Value);
+            amountOfTests = Convert.ToInt32(workSheet.Cells[1, 6].Value);
+            
+            WriteToListBox(stdRand.ToArray(), 0);
+            WriteToListBox(linRand.ToArray(), 1);
+            WriteToListBox(msRand.ToArray(), 2);
+            
+            CreateDiagram(CountNumbersInIntervals(stdRand.ToArray()), 0);
+            CreateDiagram(CountNumbersInIntervals(linRand.ToArray()), 1);
+            CreateDiagram(CountNumbersInIntervals(msRand.ToArray()), 2);
+        }
+        
+    }
+
     private void Export_OnClick(object sender, RoutedEventArgs e)
     {
         ExportToExcel("test.xlsx");
+        MessageBox.Show("Exported to Excel");
+    }
+
+    private void Import_OnClick(object sender, RoutedEventArgs e)
+    {
+        ImportFromExcel("test.xlsx");
     }
 }
