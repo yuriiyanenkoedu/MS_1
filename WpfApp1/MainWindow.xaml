@@ -67,6 +67,16 @@
                 Width="60"
                 Margin="0, 50, 0, 0"
                 Click="ButtonBase_OnClick">Get digits</Button>
+        
+        <Button Grid.Column="1"
+                Grid.Row="2"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Height="20"
+                Width="60"
+                Margin="0, 50, 0, 0"
+                Click="Export_OnClick">Export to Excel</Button>
+        
         <Label VerticalAlignment="Top" HorizontalAlignment="Left">Standart Random</Label>
         <oxy:PlotView Name="plotView1" Height="100" Width="470" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0, 0, 0, 10"></oxy:PlotView>
         

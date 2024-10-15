@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.Wpf;
+using OfficeOpenXml;
 
 namespace WpfApp1;
 
@@ -100,25 +102,35 @@ public partial class MainWindow : Window
     
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
-        GetMaxValueFromTextBox();
-        GetTestsAmountFromTextBox();
-        GetIntervalsCountFromTextBox();
+        try
+        {
+            GetMaxValueFromTextBox();
+            GetTestsAmountFromTextBox();
+            GetIntervalsCountFromTextBox();
+            
+            int[] stdRandomArray = GenerateRandomArray();
+            int[] linearRandomArray = GenerateLinearArray();
+            int[] middleSquareRandomArray = GenerateMiddleSquareArray();
         
-        int[] stdRandomArray = GenerateRandomArray();
-        int[] linearRandomArray = GenerateLinearArray();
-        int[] middleSquareRandomArray = GenerateMiddleSquareArray();
+            WriteToListBox(stdRandomArray, 0);
+            WriteToListBox(linearRandomArray, 1);
+            WriteToListBox(middleSquareRandomArray, 2);
         
-        WriteToListBox(stdRandomArray, 0);
-        WriteToListBox(linearRandomArray, 1);
-        WriteToListBox(middleSquareRandomArray, 2);
-        
-        CreateDiagram(CountNumbersInIntervals(stdRandomArray), 0);
-        CreateDiagram(CountNumbersInIntervals(linearRandomArray), 1);
-        CreateDiagram(CountNumbersInIntervals(middleSquareRandomArray), 2);
+            CreateDiagram(CountNumbersInIntervals(stdRandomArray), 0);
+            CreateDiagram(CountNumbersInIntervals(linearRandomArray), 1);
+            CreateDiagram(CountNumbersInIntervals(middleSquareRandomArray), 2);
+        }
+        catch
+        {
+            MessageBox.Show("Something went wrong");
+        }
+
     }
 
     private void WriteToListBox(int[] randomInts, int listboxIndex)
     {
+        randoms[listboxIndex].Items.Clear();
+        
         foreach (var item in randomInts)
             randoms[listboxIndex].Items.Add(item);   
     }
@@ -138,8 +150,15 @@ public partial class MainWindow : Window
         return intervals;
     }
 
-    private void CreateDiagram(int[] intervals, int plotIndex)
+    private void ClearPlotView(int plotIndex)
     {
+        plotViews[plotIndex].Model = new PlotModel();
+        plotViews[plotIndex].InvalidatePlot(true);
+    }
+    
+    private void CreateDiagram(int[] intervals, int plotIndex)
+    {   
+        ClearPlotView(plotIndex);
         var plotModel = new PlotModel();
         
         var categoryAxis = new CategoryAxis { Position = AxisPosition.Bottom, Key = "y1" };
@@ -178,5 +197,40 @@ public partial class MainWindow : Window
     private void OnPreviewTextInput(object sender, TextCompositionEventArgs e)
     {
         e.Handled = !IsTextNumeric(e.Text);
+    }
+
+    private void ExportToExcel(string fileName)
+    {
+        using (var package = new ExcelPackage())
+        {
+            var workSheet = package.Workbook.Worksheets.Add("Sheet1");
+            workSheet.Cells[1, 1].Value = "Standart random";
+            workSheet.Cells[1, 2].Value = "Linear random";
+            workSheet.Cells[1, 3].Value = "Middle square random";
+            for(int i = 0; i < randoms[0].Items.Count; i++)
+            {
+                workSheet.Cells[i + 2, 1].Value = randoms[0].Items[i];
+            }
+            
+            for(int i = 0; i < randoms[1].Items.Count; i++)
+            {
+                workSheet.Cells[i + 2, 2].Value = randoms[1].Items[i];
+            }
+            
+            for(int i = 0; i < randoms[2].Items.Count; i++)
+            {
+                workSheet.Cells[i + 2, 3].Value = randoms[2].Items[i];
+            }
+
+            FileStream file = new FileStream($"../../../../xlsFiles/{fileName}", FileMode.Append);
+            file.Close();
+            var fileInfo = new FileInfo($"../../../../xlsFiles/{fileName}");
+            package.SaveAs(fileInfo);
+        }
+    }
+
+    private void Export_OnClick(object sender, RoutedEventArgs e)
+    {
+        ExportToExcel("test.xlsx");
     }
 }
